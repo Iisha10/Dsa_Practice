@@ -1,0 +1,36 @@
+class Solution {
+public:
+bool checkcompo(vector<vector<int>>& graph, int node, int n, vector<int>&col){
+        queue<int>q;
+        q.push(node);
+        col[node]=0;
+        while(!q.empty()){
+            int nodef=q.front();
+            q.pop();
+            for(auto it:graph[nodef]){
+                if(col[it]==-1){
+                    col[it]=!col[nodef];
+                    q.push(it);
+                }
+                else if(col[it]==col[nodef]){
+                    return false;
+                }
+            }
+        }
+        return true;
+}
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n=graph.size();
+       vector<int>col(n, -1);
+       for(int i=0; i<n; i++)
+       {
+        if(col[i]==-1){
+             if(checkcompo(graph, i, n, col)==false){
+            return false;
+        }
+        }
+       
+       }
+       return true;
+    }
+};
