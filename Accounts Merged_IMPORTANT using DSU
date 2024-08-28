@@ -1,0 +1,74 @@
+class DisjointSet {
+public:
+    vector<int> rank, parent;
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+    int Findparent(int u) {
+        if (parent[u] == u) {
+            return u;
+        }
+        return parent[u] = Findparent(parent[u]);
+    }
+    void Unionbyrank(int u, int v) {
+        int ul_u = Findparent(u);
+        int ul_v = Findparent(v);
+        if (rank[ul_u] < rank[ul_v]) {
+            parent[ul_u] = ul_v;
+        } else if (rank[ul_v] < rank[ul_u]) {
+            parent[ul_v] = ul_u;
+        } else {
+            parent[ul_u] = ul_v;
+            rank[ul_v]++;
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& acc) {
+        int n = acc.size();
+        DisjointSet ds(n);
+        unordered_map<string, int> mp;
+        // connecting nodes
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < acc[i].size(); j++) {
+                string mail = acc[i][j];
+                if (mp.find(mail) == mp.end()) {
+                    mp[mail] = i;
+                } else {
+                    ds.Unionbyrank(
+                        i, mp[mail]); // jis index pe pehle mila or jis index pe
+                                      // abhi mila usko merge kar diya
+                }
+            }
+        }
+
+        // merging mails according to theri ds
+
+        vector<string> mails[n];
+        for (auto it : mp) {
+            string mail = it.first;
+            int node = ds.Findparent(it.second);
+            mails[node].push_back(mail);
+        }
+        vector<vector<string>> ans;
+        for (int i = 0; i < n; i++) {
+            if (mails[i].size() == 0) {
+                continue;
+            }
+            sort(mails[i].begin(), mails[i].end());
+            vector<string> temp;
+            temp.push_back(acc[i][0]);
+            for (auto it : mails[i]) {
+                temp.push_back(it);
+            }
+            ans.push_back(temp);
+        }
+        return ans;
+    }
+};
