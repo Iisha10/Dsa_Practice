@@ -1,0 +1,111 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+class DisjointSet{
+    vector<int>rank, parent;
+public:
+    DisjointSet(int n){
+        rank.resize(n+1, 0);
+        parent.resize(n+1);
+        for(int i=0; i<=n; i++){
+            parent[i]=i;
+
+
+        }
+    }
+        int findUparent(int node){
+            if(node==parent[node]){
+                return node;
+            }
+            return parent[node]=findUparent(parent[node]);//path compression
+        }
+        void UnionbyRank(int u, int v){
+            int ul_u=findUparent(u);
+            int ul_v=findUparent(v);
+            if(ul_u==ul_v){
+                return ;
+            }
+            if(rank[ul_u]<rank[ul_v]){
+                parent[ul_u]=ul_v;
+            }
+            else if(rank[ul_v]<rank[ul_u]){
+                parent[ul_v]=ul_u;
+            }
+            else{
+                parent[ul_u]=ul_v;
+                rank[v]++;
+            }
+
+        }
+    };
+
+class Solution {
+  public:
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        // code here
+        DisjointSet ds(n*m);
+        vector<vector<int>>vis(n, vector<int>(m, 0));
+        int cnt=0;
+        vector<int>ans;
+        int drow[]={-1, 0, 1 , 0};
+        int dcol[]={0, 1, 0, -1};
+        for(auto it:operators){
+            int row=it[0];
+            int col=it[1];
+            if(vis[row][col]==1){
+                ans.push_back(cnt);
+                continue;
+            }
+            vis[row][col]=1;
+            cnt++;
+            for(int i=0; i<4; i++){
+                int adjrow=row+drow[i];
+                int adjcol=col+dcol[i];
+                if(adjrow>=0 && adjrow<n && adjcol>=0 && adjcol<m && vis[adjrow][adjcol]==1){
+                    int nodeno=row*m+col;
+                    int adjrowno=adjrow*m+adjcol;
+                    if(ds.findUparent(nodeno)!=ds.findUparent(adjrowno)){
+                        cnt--;
+                        ds.UnionbyRank(nodeno, adjrowno);
+                    }
+                }
+            }
+            ans.push_back(cnt);
+            
+        }
+        return ans;
+    }
+};
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n,m,k; cin>>n>>m>>k;
+        vector<vector<int>> a;
+        
+        for(int i=0; i<k; i++){
+            vector<int> temp;
+            for(int j=0; j<2; j++){
+                int x; cin>>x;
+                temp.push_back(x);
+            }
+            a.push_back(temp);
+        }
+    
+        Solution obj;
+        vector<int> res = obj.numOfIslands(n,m,a);
+        
+        for(auto x : res)cout<<x<<" ";
+        cout<<"\n";
+    }
+}
+
+// } Driver Code Ends
