@@ -1,0 +1,97 @@
+//{ Driver Code Starts
+// Initial template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+// User function template for C++
+
+class Solution {
+    
+  public:
+    // Function to find if there is a celebrity in the party or not.
+    bool verify(int num, int n, vector<vector<int> >& mat){
+        bool rowCheck=false;
+        int zerocnt=0;
+        for(int i=0; i<n; i++){
+            if(mat[num][i]==0){
+                zerocnt++;
+            }
+        }
+        if(zerocnt==n){
+            rowCheck=true;
+        }
+        bool colCheck=false;
+        int onecnt=0;
+        for(int i=0; i<n;i++){
+            if(mat[i][num]==1){
+                onecnt++;
+            }
+        }
+        if(onecnt==n-1){
+            colCheck=true;
+        }
+        if(rowCheck && colCheck){
+            return true;
+        }
+        return false;
+    }
+    bool knows(int a, int b, vector<vector<int> >&mat){
+        if(mat[a][b]==1 && mat[b][a]==0){
+            return true;
+        }
+        return false;
+    }
+    int celebrity(vector<vector<int> >& mat) {
+        // code here
+        stack<int>st;
+        int n=mat.size();
+        for(int i=0; i<mat.size(); i++){
+            st.push(i);
+        }
+        
+        while(st.size()>1){
+            int a=st.top();
+            st.pop();
+            int b=st.top();
+            st.pop();
+            
+            if(knows(a, b, mat)){
+                st.push(b);
+            }
+            else{
+                st.push(a);
+            }
+        }
+        //now the single element in the stack could be a celebrity
+        //so we will verify it now
+        int celeb=st.top();
+        if(verify(celeb, n, mat)){
+            return celeb;
+        }
+        return -1;
+    }
+};
+
+//{ Driver Code Starts.
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<vector<int> > M(n, vector<int>(n, 0));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> M[i][j];
+            }
+        }
+        Solution ob;
+        cout << ob.celebrity(M) << endl;
+    }
+}
+
+// } Driver Code Ends
