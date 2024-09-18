@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int numSubmatrixSumTarget(vector<vector<int>>& mat, int target) {
+        int n=mat.size();
+        int m=mat[0].size();
+        for(int i=0; i<n; i++){
+            for(int j=1; j<m; j++){
+                mat[i][j]+=mat[i][j-1];
+            }
+        }//prefix sum find kiya sare col ka
+
+        int res=0;
+        //finding subarrays in downward direction
+        for(int start_col=0; start_col<m; start_col++){
+            for(int j=start_col; j<m; j++){
+               unordered_map<int, int>mp;
+                mp[0]=1;
+                int presum=0;
+                for(int rows=0; rows<n; rows++){
+                    presum+=mat[rows][j]-(start_col>0?mat[rows][start_col-1]:0);
+                    if(mp.find(presum-target)!=mp.end()){
+                        res+=mp[presum-target];
+                    }
+                    mp[presum]++;
+                }
+            }
+        }
+        return res;
+    }
+};
