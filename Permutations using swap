@@ -1,0 +1,20 @@
+class Solution {
+public:
+void func(vector<int>&nums, vector<vector<int>>&ans, int ind){
+    if(ind>=nums.size()){
+        ans.push_back(nums);
+        return;
+    }
+    for(int i=ind;i<nums.size(); i++){
+        swap(nums[i], nums[ind]);
+        func(nums, ans, ind+1);
+        swap(nums[i], nums[ind]);
+    }
+}
+    vector<vector<int>> permute(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<int>>ans;
+        func(nums, ans, 0);
+        return ans;
+    }
+};
