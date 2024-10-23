@@ -1,0 +1,26 @@
+class Solution {
+public:
+int func(vector<int>&nums, int ind, int prev, vector<vector<int>>&dp){
+    if(ind>=nums.size()){
+        return 0;
+    }
+    if(prev!=-1 && dp[ind][prev]!=-1){
+        return dp[ind][prev];
+    }
+    int take=0;
+    if(prev==-1 || nums[prev]<nums[ind]){
+        take=1+func(nums, ind+1, ind, dp);
+    }
+    int nt=func(nums, ind+1, prev, dp);
+    if(prev!=-1){
+         return dp[ind][prev]=max(take, nt);
+    }
+    return max(take, nt);
+    }
+   
+    int lengthOfLIS(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<int>>dp(n+1, vector<int>(n+1, -1));
+        return func(nums, 0, -1, dp);
+    }
+};
