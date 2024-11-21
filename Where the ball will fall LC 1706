@@ -1,0 +1,41 @@
+class Solution {
+public:
+    vector<int> findBall(vector<vector<int>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<int>ans;
+        
+        for(int balls=0;balls<m; balls++){
+            int row=0;//sari balls 0th row se hi niche girengi
+            int col=balls;
+            bool atkegi=false;
+            while(row<n && col<m){
+                if(grid[row][col]==1){
+                    if(col==m-1 || grid[row][col+1]==-1)//right nbr check krre hain
+                    {
+                        atkegi=true;
+                        break;
+                    }
+                    col++;
+                }
+                else{// grid[row][col]=-1
+                    if(col==0 || grid[row][col-1]==1){
+                        atkegi=true;
+                        break;
+                    }
+                    col--;
+                }
+                row++;
+            }
+             if(atkegi==true){
+                ans.push_back(-1);
+            }
+            else{
+                ans.push_back(col);
+            }
+           
+
+        }
+        return ans;
+    }
+};
